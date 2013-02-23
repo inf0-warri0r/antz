@@ -7,7 +7,7 @@ Blog   : http://www.inf0warri0r.blogspot.com
 Date   : 22/02/2013
 License:
 
-     Copyright 2012 Tharindra Galahena
+     Copyright 2013 Tharindra Galahena
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -28,12 +28,12 @@ import time
 
 
 root = Tk()
-root.title("antz")
+root.title("ant colony simulation")
 w = antz.world()
 cw = 640
 ch = 640
 
-chart_1 = Canvas(root, width=cw, height=ch, background="black")
+chart_1 = Canvas(root, width=cw, height=ch, background="green")
 chart_1.grid(row=0, column=0)
 
 while 1:
@@ -62,8 +62,8 @@ while 1:
             chart_1.create_oval(x - 5, y - 5,
                     x + 5, y + 5, fill='yellow')
 
-    chart_1.create_oval(320 - 6, 320 - 6,
-                320 + 6, 320 + 6, fill='red')
+    chart_1.create_oval(320 - 12, 320 - 12,
+                320 + 12, 320 + 12, fill='red')
 
     chart_1.update()
 

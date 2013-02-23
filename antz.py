@@ -7,7 +7,7 @@ Blog   : http://www.inf0warri0r.blogspot.com
 Date   : 22/02/2013
 License:
 
-     Copyright 2012 Tharindra Galahena
+     Copyright 2013 Tharindra Galahena
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -31,7 +31,7 @@ class world:
         self.width = 100
         self.height = 100
         self.grid = list()
-        self.hive = 50, 50
+        self.hill = 50, 50
         self.ants = list()
         self.paths = list()
 
@@ -46,7 +46,7 @@ class world:
                 self.grid[i].append(0)
 
         for i in range(0, self.height):
-            self.ants.append(ant(self.hive))
+            self.ants.append(ant(self.hill))
 
         l = random.randrange(0, 100)
         m = random.randrange(0, 100)
@@ -67,67 +67,57 @@ class world:
                             self.ants[i].used_path = list()
                             path.reverse()
                             for j in range(0, len(path)):
-                                if path[j][0] == self.hive:
-                                    print "b"
-                                    break
-                                self.grid[path[j][0][0]][path[j][0][1]] = 3
+                                #if path[j] == self.hill:
+                                    #break
+                                self.grid[path[j][0]][path[j][1]] = 3
                             self.grid[self.ants[i].x][self.ants[i].y] = 0
-                            self.grid[self.hive[0]][self.hive[1]] = 0
+                            self.grid[self.hill[0]][self.hill[1]] = 0
+                            self.ants[i].with_food = True
                         else:
                             if self.ants[i].target == self.food:
-                                #print "food"
-                                if len(self.ants[i].pr_path) > 0:
-                                    for mx_p in self.ants[i].pr_path:
+                                if len(self.ants[i].used_path) > 0:
+                                    for mx_p in self.ants[i].used_path:
                                         a = self.grid[mx_p[0]][mx_p[1]]
-                                        #if a < 20:
                                         self.grid[mx_p[0]][mx_p[1]] = a + 3
                                     self.ants[i].pr_path = list()
-                                    self.grid[self.hive[0]][self.hive[1]] = 0
+                                    self.grid[self.hill[0]][self.hill[1]] = 0
                                     self.grid[self.ants[i].x][self.ants[i].y] = 0
+                                self.ants[i].with_food = True
                             else:
-                                #print "wrong food"
-                                if len(self.ants[i].pr_path) > 0:
-                                    #print "-----"
-                                    for mx_p in self.ants[i].pr_path:
+                                if len(self.ants[i].used_path) > 0:
+                                    for mx_p in self.ants[i].used_path:
                                         a = self.grid[mx_p[0]][mx_p[1]]
-                                        #if a > 0:
                                         self.grid[mx_p[0]][mx_p[1]] = a - 3
-                                    self.ants[i].pr_path = list()
-                                    self.grid[self.hive[0]][self.hive[1]] = 0
+                                    self.ants[i].used_path = list()
+                                    self.grid[self.hill[0]][self.hill[1]] = 0
                                     self.grid[self.ants[i].x][self.ants[i].y] = 0
                         self.ants[i].mode = 'f'
-                        self.ants[i].target = self.hive
+                        self.ants[i].target = self.hill
                         self.food_amount = self.food_amount - 1
 
-                if self.ants[i].x == self.hive[0]:
-                    if self.ants[i].y == self.hive[1]:
+                if self.ants[i].x == self.hill[0]:
+                    if self.ants[i].y == self.hill[1]:
                         if self.ants[i].mode == 'f':
-                            if self.ants[i].target == self.hive:
-                                #print "hive"
+                            if self.ants[i].target == self.hill:
                                 self.ants[i].target = self.food
-                                if len(self.ants[i].pr_path) > 0:
-                                    for mx_p in self.ants[i].pr_path:
-                                        a = self.grid[mx_p[0]][mx_p[1]]
-                                        if a < 20:
-                                            self.grid[mx_p[0]][mx_p[1]] = a
-                                    self.ants[i].pr_path = list()
+                                if len(self.ants[i].used_path) > 0:
+                                    self.ants[i].used_path = list()
                                     self.grid[self.food[0]][self.food[1]] = 0
                             else:
-                                #print "wrong hive"
-                                if len(self.ants[i].pr_path) > 0:
-                                    #print "-----"
-                                    for mx_p in self.ants[i].pr_path:
+                                if len(self.ants[i].used_path) > 0:
+                                    for mx_p in self.ants[i].used_path:
                                         a = self.grid[mx_p[0]][mx_p[1]]
                                         if a > 0:
                                             self.grid[mx_p[0]][mx_p[1]] = a - 3
-                                    self.ants[i].pr_path = list()
-                                    self.grid[self.hive[0]][self.hive[1]] = 0
+                                    self.ants[i].used_path = list()
+                                    self.grid[self.hill[0]][self.hill[1]] = 0
                                     self.grid[self.ants[i].x][self.ants[i].y] = 0
+                        self.ants[i].with_food = False
 
                 if self.ants[i].mode != 'f':
                     if self.grid[self.ants[i].x][self.ants[i].y] > 0:
                         self.ants[i].mode = 'f'
-                        self.ants[i].target = self.hive
+                        self.ants[i].target = self.hill
 
                 if self.ants[i].mode == 'f':
                     x = self.ants[i].x
@@ -149,12 +139,14 @@ class world:
                             if self.ants[i].x_2 == self.ants[i].x + j:
                                 if self.ants[i].y_2 == self.ants[i].y + k:
                                     continue
-                            ne = 100.0 / (1.0 + self.ants[i].h(x + j, y + k,
+                            direction = 100.0 / (1.0 + self.ants[i].h(x + j,
+                                    y + k,
                                     self.ants[i].target[0],
                                     self.ants[i].target[1]))
-                            pr = self.grid[x + j][y + k] / 5.0
-                            print "sm = ", ne, " ", pr
-                            sm = ne + pr
+
+                            peromone = self.grid[x + j][y + k] / 2.0
+
+                            sm = direction + peromone
                             if sm > mx:
                                 mx = sm
                                 mx_p = (x + j, y + k)
@@ -167,25 +159,32 @@ class world:
                     a = self.grid[mx_p[0]][mx_p[1]]
                     if a > 0:
                         self.grid[mx_p[0]][mx_p[1]] = a - 1
-                    self.ants[i].pr_path.append(mx_p)
+                    self.ants[i].used_path.append(mx_p)
 
                 else:
                     path = self.ants[i].check_trail(self.grid, self.width,
                                         self.height)
-                    self.ants[i].path = self.ants[i].find_food(self.grid,
-                                        self.width, self.height, self.food)
+                    if len(path) <= 0:
+                        self.ants[i].path = self.ants[i].find_food(self.grid,
+                                            self.width, self.height, self.food)
+                    else:
+                        self.ants[i].path = path
+                    self.ants[i].with_food = False
             else:
-                ((x, y), p) = self.ants[i].path[0]
+                x, y = self.ants[i].path[0]
                 self.ants[i].x_2 = self.ants[i].x
                 self.ants[i].y_2 = self.ants[i].y
                 self.ants[i].x = x
                 self.ants[i].y = y
-                self.ants[i].used_path.append(((x, y), p))
-                self.ants[i].path.remove(((x, y), p))
+                self.ants[i].used_path.append((x, y))
+                self.ants[i].path.remove((x, y))
+                self.ants[i].with_food = False
 
         if self.food_amount <= 0:
+            self.ants[i].with_food = False
             for i in range(0, self.num_of_ants):
                 self.ants[i].mode = 'r'
+                self.ants[i].used_path = list()
             for i in range(0, self.height):
                 for j in range(0, self.width):
                     self.grid[j][i] = 0
@@ -211,7 +210,6 @@ class ant:
         self.with_food = False
         self.search_space = 10
         self.path = list()
-        self.pr_path = list()
         self.used_path = list()
         self.target = (0, 0)
         self.mode = 'r'
@@ -247,10 +245,10 @@ class ant:
         if x != dx and y != dy:
             return list()
         while x != sx or y != sy:
-            path.append(((x, y), 0))
+            path.append((x, y))
             x, y = visited[(x, y)]
 
-        path.append(((x, y), 1))
+        path.append((x, y))
         return path
 
     def find_food(self, grid, w, h, food):
@@ -262,7 +260,6 @@ class ant:
                     path = self.find_path(self.x, self.y, i, j, grid, w, h)
                     if len(path) != 0:
                         path.reverse()
-                        self.with_food = True
                         return path
 
         if self.count > 5:
@@ -285,11 +282,8 @@ class ant:
             f4 = self.x + x == self.x_2 and self.y + y == self.y_2
         self.inc_x = x
         self.inc_y = y
-
         self.count = self.count + 1
-
-        self.with_food = False
-        return [((self.x + self.inc_x, self.y + self.inc_y), 1)]
+        return [(self.x + self.inc_x, self.y + self.inc_y)]
 
     def find_home(self, dx, dy, grid, w, h):
         path = self.find_path(self.x, self.y, dx, dy, grid, w, h)
